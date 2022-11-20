@@ -1,12 +1,14 @@
-<form method="post">
-  <label for="email">Email: </label>
-  <input name="email" type="email" />
+<script>
+  import { enhance } from "$app/forms";
+</script>
+
+<form method="post" use:enhance>
   <label for="username">Username: </label>
   <input name="username" type="text" />
   <label for="password">Password: </label>
   <input name="password" type="password" />
 
-  <button type="submit">Register!</button>
+  <button>Log in!</button>
 </form>
 
 <style>
