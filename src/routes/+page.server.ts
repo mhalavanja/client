@@ -1,5 +1,5 @@
 import type { Actions } from "./$types";
-import { AUTHENTICATE_API } from "../../../consts";
+import { AUTHENTICATE_API } from "../consts";
 import { redirect, type ServerLoad } from "@sveltejs/kit";
 
 interface AuthToken {

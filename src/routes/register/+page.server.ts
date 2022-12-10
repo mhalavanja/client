@@ -1,5 +1,5 @@
 import type { Actions } from "./$types";
-import { REGISTER_API } from "../../../consts";
+import { REGISTER_API } from "../../consts";
 
 export const actions: Actions = {
   default: async ({ request }) => {
@@ -14,9 +14,6 @@ export const actions: Actions = {
         email,
         username,
         password,
-        // email: "mat2@mail.com",
-        // username: "matijaa3",
-        // password: "passata",
       }),
     });
 
