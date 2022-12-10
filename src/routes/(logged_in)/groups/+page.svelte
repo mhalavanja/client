@@ -5,7 +5,9 @@
 </script>
 
 {#if data.success}
-  <h1>{data.groups}</h1>
+  <h1>Groups</h1>
+  <h3>{data.groups}</h3>
+  <a href="/groups/new">Add new group</a>
 {:else}
   <h1>Ne radi</h1>
 {/if}
