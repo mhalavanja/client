@@ -1,5 +1,5 @@
 <script>
-  import Form from "../components/Form.svelte";
+  import LandingForm from "../components/LandingForm.svelte";
 </script>
 
-<Form />
+<LandingForm />

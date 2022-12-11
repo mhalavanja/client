@@ -1,6 +1,6 @@
 <script>
   export const prerender = true;
-  import Form from "../../components/Form.svelte";
+  import LandingForm from "../../components/LandingForm.svelte";
 </script>
 
-<Form register={true} />
+<LandingForm register={true} />

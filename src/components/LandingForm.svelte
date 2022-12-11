@@ -1,9 +1,6 @@
 <script lang="ts">
   import { enhance } from "$app/forms";
   export let register: boolean = false;
-
-  if (!register) {
-  }
 </script>
 
 <div class="flex min-h-full items-center justify-center py-12 px-4 sm:px-6 lg:px-8">

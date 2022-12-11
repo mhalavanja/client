@@ -12,17 +12,17 @@ export const load: PageServerLoad = async (event) => {
 export const actions: Actions = {
   default: async (event) => {
     const data = await event.request.formData();
-    const name = data.get("name");
+    const friendUsername = data.get("username");
     const jwt = event.cookies.get("jwt") || "";
     if (jwt === "") {
       throw redirect(307, "/");
     }
 
-    console.log(JSON.stringify(name));
+    console.log(JSON.stringify(friendUsername));
     const res = await fetch(FRIENDS_API, {
       method: "POST",
       headers: { authorization: "Bearer " + jwt },
-      body: JSON.stringify(name),
+      body: JSON.stringify(friendUsername),
     });
 
     if (res.status === 401 || res.status === 400) {
