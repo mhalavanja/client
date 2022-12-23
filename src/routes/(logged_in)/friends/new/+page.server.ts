@@ -18,16 +18,15 @@ export const actions: Actions = {
       throw redirect(307, "/");
     }
 
-    console.log(JSON.stringify(friendUsername));
     const res = await fetch(FRIENDS_API, {
       method: "POST",
       headers: { authorization: "Bearer " + jwt },
       body: JSON.stringify(friendUsername),
     });
 
-    if (res.status === 401 || res.status === 400) {
+    if (res.status >= 400 && res.status < 600) {
       return { success: false };
-    } else if (res.status === 500) {
     }
+    throw redirect(307, "/friends");
   },
 };

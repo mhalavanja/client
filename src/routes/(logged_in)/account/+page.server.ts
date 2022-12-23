@@ -28,9 +28,14 @@ export const actions: Actions = {
     const username = data.get("username");
     const email = data.get("email");
     const password = data.get("password");
+    const jwt = event.cookies.get("jwt") || "";
+    if (jwt === "") {
+      throw redirect(307, "/");
+    }
 
     const res = await fetch(USER_API, {
       method: "PUT",
+      headers: { authorization: "Bearer " + jwt },
       body: JSON.stringify({
         username,
         email,
@@ -38,9 +43,19 @@ export const actions: Actions = {
       }),
     });
 
-    if (res.status === 401) {
-      return { success: false };
-    } else if (res.status === 500) {
+    if (res.status === 401 || res.status === 500) {
+      return {
+        success: false,
+      };
     }
+
+    return {
+      success: true,
+      user: {
+        username,
+        email,
+        password,
+      },
+    };
   },
 };

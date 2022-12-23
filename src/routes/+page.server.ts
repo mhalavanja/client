@@ -2,12 +2,6 @@ import type { Actions } from "./$types";
 import { AUTHENTICATE_API } from "../consts";
 import { redirect, type ServerLoad } from "@sveltejs/kit";
 
-interface AuthToken {
-  readonly access_token: string;
-  readonly access_token_expires_at: string;
-  readonly username: string;
-}
-
 export const load: ServerLoad = async (event) => {
   if (event.cookies.get("jwt")) {
     throw redirect(307, "/groups");

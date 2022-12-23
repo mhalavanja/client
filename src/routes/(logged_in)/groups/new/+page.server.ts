@@ -12,22 +12,21 @@ export const load: PageServerLoad = async (event) => {
 export const actions: Actions = {
   default: async (event) => {
     const data = await event.request.formData();
-    const name = data.get("name");
+    const groupName = data.get("groupName");
     const jwt = event.cookies.get("jwt") || "";
     if (jwt === "") {
       throw redirect(307, "/");
     }
 
-    console.log(JSON.stringify(name));
     const res = await fetch(GROUPS_API, {
       method: "POST",
       headers: { authorization: "Bearer " + jwt },
-      body: JSON.stringify(name),
+      body: JSON.stringify(groupName),
     });
 
-    if (res.status === 401 || res.status === 400) {
+    if (res.status >= 400 && res.status < 600) {
       return { success: false };
-    } else if (res.status === 500) {
     }
+    throw redirect(307, "/groups");
   },
 };

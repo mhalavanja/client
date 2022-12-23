@@ -1,15 +1,20 @@
 <script lang="ts">
+  import GenericForm, { GenericFormType } from "../../../components/GenericForm.svelte";
   import FriendCard from "../../../components/FriendCard.svelte";
   import type { PageData } from "./$types";
 
   export let data: PageData;
 </script>
 
-<h1>Friends</h1>
-{#each data.friends as friend}
-  <FriendCard {friend} />
-{/each}
-<a href="/friends/new">Add a new friend</a>
+<div class="grid grid-cols-3 grid-flow-row gap-x-0">
+  {#each data.friends as friend}
+    <FriendCard {friend} />
+  {/each}
+</div>
 
-<style>
-</style>
+<GenericForm
+  buttonText="Add"
+  formType={GenericFormType.NewFriend}
+  title="Add new friend"
+  action="/friends/new"
+/>

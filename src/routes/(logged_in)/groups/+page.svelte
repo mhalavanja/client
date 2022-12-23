@@ -1,16 +1,20 @@
 <script lang="ts">
+  import GenericForm, { GenericFormType } from "../../../components/GenericForm.svelte";
+  import GroupCard from "../../../components/GroupCard.svelte";
   import type { PageData } from "./$types";
 
   export let data: PageData;
 </script>
 
-{#if data.success}
-  <h1>Groups</h1>
-  <h3>{data.groups}</h3>
-  <a href="/groups/new">Add new group</a>
-{:else}
-  <h1>Ne radi</h1>
-{/if}
+<div class="grid grid-cols-3 grid-flow-row gap-x-0">
+  {#each data.groups as group}
+    <GroupCard {group} />
+  {/each}
+</div>
 
-<style>
-</style>
+<GenericForm
+  buttonText="Create"
+  formType={GenericFormType.NewGroup}
+  title="Create new group"
+  action="/groups/new"
+/>
