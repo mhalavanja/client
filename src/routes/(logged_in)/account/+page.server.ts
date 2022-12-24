@@ -1,5 +1,4 @@
-import type { Actions } from "./$types";
-import type { PageServerLoad } from ".svelte-kit/types/src/routes/groups/$types";
+import type { Actions, PageServerLoad } from "./$types";
 import { redirect } from "@sveltejs/kit";
 import { USER_API } from "../../../consts";
 

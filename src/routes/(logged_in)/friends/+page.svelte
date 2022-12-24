@@ -16,5 +16,5 @@
   buttonText="Add"
   formType={GenericFormType.NewFriend}
   title="Add new friend"
-  action="/friends/new"
+  action="/friends"
 />

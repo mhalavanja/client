@@ -7,3 +7,4 @@ node_modules
 .env.*
 !.env.example
 ${XDG_CACHE_HOME}/*
+package-lock.json

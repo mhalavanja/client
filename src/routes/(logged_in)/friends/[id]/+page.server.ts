@@ -1,6 +1,7 @@
-import type { PageServerLoad } from ".svelte-kit/types/src/routes/groups/$types";
-import { json, redirect } from "@sveltejs/kit";
+import type { PageServerLoad } from ".svelte-kit/types/src/routes/$types";
+import { redirect } from "@sveltejs/kit";
 import { FRIENDS_API } from "../../../../consts";
+import type { User } from "../../../../types";
 
 export const load: PageServerLoad = async (event) => {
   const jwt = event.cookies.get("jwt") || "";
@@ -21,7 +22,7 @@ export const load: PageServerLoad = async (event) => {
   }
 
   const jsonFriend = await res.json();
-  const friend: Friend = {
+  const friend: User = {
     id: jsonFriend.id,
     username: jsonFriend.username,
     email: jsonFriend.email,
