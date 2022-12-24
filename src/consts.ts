@@ -10,8 +10,13 @@ const AUTH_HEADER = "authorization";
 
 enum Errors {
   MissingGroupName = "Group name is missing",
+  MissingUsername = "Username is missing",
   GroupNameEmpty = "Group name can't be empty",
+  UsernameEmpty = "Username can't be empty",
+  UniqueUsername = "Username must be unique",
+  AlreadyAddedFriend = "You are already friends with that user",
   UserNotExisting = "User with this username doesn't exist",
+  UserAlreadyExists = "User with the given email address or username already exists",
   GroupNotExisting = "Group with this name doesn't exist",
   GenericError = "Something went wrong on our side, sorry about that",
 }

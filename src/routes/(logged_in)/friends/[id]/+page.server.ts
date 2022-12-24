@@ -1,6 +1,6 @@
 import type { PageServerLoad } from ".svelte-kit/types/src/routes/$types";
-import { redirect } from "@sveltejs/kit";
-import { FRIENDS_API } from "../../../../consts";
+import { fail, redirect } from "@sveltejs/kit";
+import { Errors, FRIENDS_API } from "../../../../consts";
 import type { User } from "../../../../types";
 
 export const load: PageServerLoad = async (event) => {
@@ -16,9 +16,8 @@ export const load: PageServerLoad = async (event) => {
     headers: { authorization: "Bearer " + jwt },
   });
 
-  if (res.status === 401) {
-    return { success: false };
-  } else if (res.status === 500) {
+  if (res.status >= 400 && res.status < 600) {
+    return fail(res.status, { success: false, error: Errors.GenericError });
   }
 
   const jsonFriend = await res.json();

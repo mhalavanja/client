@@ -26,6 +26,11 @@ export const actions: Actions = {
   default: async (event) => {
     const data = await event.request.formData();
 
+    const jwt = event.cookies.get("jwt") || "";
+    if (jwt === "") {
+      throw redirect(307, "/");
+    }
+
     let groupName = data.get("groupName");
     if (!groupName) {
       return fail(400, { success: false, error: Errors.MissingGroupName });
@@ -34,11 +39,6 @@ export const actions: Actions = {
     groupName = String(groupName).trim();
     if (0 === groupName.length) {
       return fail(400, { success: false, error: Errors.GroupNameEmpty });
-    }
-
-    const jwt = event.cookies.get("jwt") || "";
-    if (jwt === "") {
-      throw redirect(307, "/");
     }
 
     const res = await fetch(GROUPS_API, {

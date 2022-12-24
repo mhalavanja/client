@@ -1,6 +1,9 @@
 import type { PageServerLoad } from ".svelte-kit/types/src/routes/$types";
-import { redirect, type Actions } from "@sveltejs/kit";
-import { FRIENDS_API } from "../../../consts";
+import { fail, redirect, type Actions } from "@sveltejs/kit";
+import type { User } from "src/types";
+import { Errors, FRIENDS_API } from "../../../consts";
+
+let friends: Array<User>;
 
 export const load: PageServerLoad = async (event) => {
   const jwt = event.cookies.get("jwt") || "";
@@ -13,21 +16,42 @@ export const load: PageServerLoad = async (event) => {
     headers: { authorization: "Bearer " + jwt },
   });
 
-  if (res.status === 401) {
-    return { success: false };
-  } else if (res.status === 500) {
+  if (res.status >= 400 && res.status < 600) {
+    return fail(res.status, { success: false, error: Errors.GenericError });
   }
 
-  return { success: true, friends: res.json() };
+  friends = await res.json();
+  return { success: true, error: null, friends };
 };
 
 export const actions: Actions = {
   default: async (event) => {
     const data = await event.request.formData();
-    const friendUsername = data.get("username");
+
     const jwt = event.cookies.get("jwt") || "";
     if (jwt === "") {
       throw redirect(307, "/");
+    }
+
+    let friendUsername = data.get("username");
+    if (!friendUsername) {
+      return fail(400, { success: false, error: Errors.MissingUsername });
+    }
+
+    friendUsername = String(friendUsername).trim();
+    if (0 === friendUsername.length) {
+      return fail(400, { success: false, error: Errors.UsernameEmpty });
+    }
+
+    const username = event.cookies.get("username");
+    if (username === friendUsername) {
+      return fail(409, { success: false, error: Errors.UniqueUsername });
+    }
+
+    for (let friend of friends) {
+      if (friend.username === friendUsername) {
+        return fail(409, { success: false, error: Errors.AlreadyAddedFriend });
+      }
     }
 
     const res = await fetch(FRIENDS_API, {
@@ -36,8 +60,10 @@ export const actions: Actions = {
       body: JSON.stringify(friendUsername),
     });
 
-    if (res.status >= 400 && res.status < 600) {
-      return { success: false };
+    if (res.status == 404) {
+      return fail(404, { success: false, error: Errors.UserNotExisting });
+    } else if (res.status >= 400 && res.status < 600) {
+      return fail(res.status, { success: false, error: Errors.GenericError });
     }
     throw redirect(307, "/friends");
   },
