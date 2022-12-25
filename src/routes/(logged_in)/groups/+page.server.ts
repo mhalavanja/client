@@ -47,8 +47,10 @@ export const actions: Actions = {
       body: JSON.stringify(groupName),
     });
 
-    if (res.status >= 400 && res.status < 600) {
-      return { success: false, error: Errors.GenericError };
+    if (res.status == 401) {
+      return fail(404, { success: false, error: Errors.UserNotExisting });
+    } else if (res.status >= 400 && res.status < 600) {
+      return fail(res.status, { success: false, error: Errors.GenericError });
     }
 
     throw redirect(307, "/groups");
