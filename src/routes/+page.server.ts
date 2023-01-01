@@ -34,6 +34,7 @@ export const actions: Actions = {
       path: "/",
       expires: new Date(authToken.access_token_expires_at),
     });
+
     event.cookies.set("username", String(username), {
       path: "/",
       expires: new Date(authToken.access_token_expires_at),
