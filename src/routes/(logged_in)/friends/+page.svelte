@@ -12,11 +12,13 @@
   <Alert message={form.error} />
 {/if}
 
-<div class="grid grid-cols-3 grid-flow-row gap-x-0">
-  {#each data.friends as friend}
-    <FriendCard {friend} />
-  {/each}
-</div>
+{#if data.friends !== undefined}
+  <div class="grid grid-cols-3 grid-flow-row gap-x-0">
+    {#each data.friends as friend}
+      <FriendCard {friend} />
+    {/each}
+  </div>
+{/if}
 
 <GenericForm
   buttonText="Add"

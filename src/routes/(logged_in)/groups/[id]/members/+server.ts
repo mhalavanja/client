@@ -22,7 +22,7 @@ export const GET = (async (event) => {
 
   const jsonGroupUsers = await res.json();
   let groupUsers: User[] = [];
-  console.log(jsonGroupUsers[0]);
+
   for (let jsonUser of jsonGroupUsers) {
     groupUsers.push({
       id: jsonUser.user_id,
@@ -32,4 +32,25 @@ export const GET = (async (event) => {
   }
 
   return new Response(JSON.stringify({ success: true, members: groupUsers }));
+}) satisfies RequestHandler;
+
+export const DELETE = (async (event) => {
+  const jwt = event.cookies.get("jwt") || "";
+  const id: number = event.params.id;
+
+  if (jwt === "") {
+    throw redirect(307, "/");
+  }
+
+  const res = await fetch(GROUPS_API + "/" + id + "/users", {
+    method: "DELETE",
+    headers: { authorization: "Bearer " + jwt },
+    body: event.request.body,
+  });
+
+  if (res.status >= 400 && res.status < 600) {
+    return fail(res.status, { success: false, error: Errors.GenericError });
+  }
+
+  return new Response(JSON.stringify({ success: true }));
 }) satisfies RequestHandler;

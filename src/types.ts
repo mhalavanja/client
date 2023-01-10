@@ -14,7 +14,7 @@ interface Group {
 interface AuthToken {
   readonly access_token: string;
   readonly access_token_expires_at: string;
-  readonly username: string;
+  readonly user_id: number;
 }
 
 export { type User, type Group, type AuthToken };

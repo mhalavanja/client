@@ -27,7 +27,7 @@ export const load: PageServerLoad = async (event) => {
     name: jsonGroup.group_name,
     owner: jsonGroup.owner_username,
   };
-  return { success: true, group, isOwner: username === jsonGroup.owner_username };
+  return { success: true, group, username };
 };
 
 export const actions: Actions = {
@@ -53,6 +53,7 @@ export const actions: Actions = {
 
     throw redirect(307, "/groups");
   },
+
   deleteMember: async (event) => {
     const jwt = event.cookies.get("jwt") || "";
     if (jwt === "") {
