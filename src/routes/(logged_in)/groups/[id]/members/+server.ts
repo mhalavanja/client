@@ -5,7 +5,7 @@ import type { RequestHandler } from "./$types";
 
 export const GET = (async (event) => {
   const jwt = event.cookies.get("jwt") || "";
-  const id: number = event.params.id;
+  const id: number = Number(event.params.id);
 
   if (jwt === "") {
     throw redirect(307, "/");
@@ -34,9 +34,48 @@ export const GET = (async (event) => {
   return new Response(JSON.stringify({ success: true, members: groupUsers }));
 }) satisfies RequestHandler;
 
+export const POST = (async (event) => {
+  const groupId: number = Number(event.params.id);
+
+  const jwt = event.cookies.get("jwt") || "";
+  if (jwt === "") {
+    throw redirect(307, "/");
+  }
+
+  let friendUsername = await event.request.json();
+  if (!friendUsername) {
+    return fail(400, { success: false, error: Errors.MissingUsername });
+  }
+
+  friendUsername = String(friendUsername).trim();
+  if (0 === friendUsername.length) {
+    return fail(400, { success: false, error: Errors.UsernameEmpty });
+  }
+
+  const username = event.cookies.get("username");
+  if (username === friendUsername) {
+    return fail(409, { success: false, error: Errors.UniqueUsername });
+  }
+
+  const res = await fetch(GROUPS_API + "/" + groupId + "/users", {
+    method: "POST",
+    headers: { authorization: "Bearer " + jwt },
+    body: JSON.stringify(friendUsername),
+  });
+
+  if (res.status == 404) {
+    return fail(404, { success: false, error: Errors.UserNotExisting });
+  } else if (res.status == 409) {
+    return fail(409, { success: false, error: Errors.UserInGroup });
+  } else if (res.status >= 400 && res.status < 600) {
+    return fail(res.status, { success: false, error: Errors.GenericError });
+  }
+}) satisfies RequestHandler;
+
 export const DELETE = (async (event) => {
   const jwt = event.cookies.get("jwt") || "";
-  const id: number = event.params.id;
+  const id: number = Number(event.params.id);
+  const userId: string = await event.request.json();
 
   if (jwt === "") {
     throw redirect(307, "/");
@@ -45,7 +84,7 @@ export const DELETE = (async (event) => {
   const res = await fetch(GROUPS_API + "/" + id + "/users", {
     method: "DELETE",
     headers: { authorization: "Bearer " + jwt },
-    body: event.request.body,
+    body: userId,
   });
 
   if (res.status >= 400 && res.status < 600) {

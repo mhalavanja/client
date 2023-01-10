@@ -18,6 +18,7 @@ enum Errors {
   AlreadyAddedFriend = "You are already friends with that user",
   UserNotExisting = "User with this username doesn't exist",
   UserAlreadyExists = "User with the given email address or username already exists",
+  UserInGroup = "User is already a member of this group",
   GroupNotExisting = "Group with this name doesn't exist",
   GenericError = "Something went wrong on our side, sorry about that",
 }

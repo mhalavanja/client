@@ -1,9 +1,8 @@
 import type { PageServerLoad } from ".svelte-kit/types/src/routes/$types";
 import { fail, redirect, type Actions } from "@sveltejs/kit";
-import type { User } from "src/types";
 import { Errors, FRIENDS_API } from "../../../consts";
 
-let friends: Array<User>;
+// let friends: Array<User>;
 
 export const load: PageServerLoad = async (event) => {
   const jwt = event.cookies.get("jwt") || "";
@@ -20,7 +19,7 @@ export const load: PageServerLoad = async (event) => {
     return fail(res.status, { success: false, error: Errors.GenericError });
   }
 
-  friends = await res.json();
+  let friends = await res.json();
   return { success: true, error: null, friends };
 };
 
@@ -48,11 +47,11 @@ export const actions: Actions = {
       return fail(409, { success: false, error: Errors.UniqueUsername });
     }
 
-    for (let friend of friends) {
-      if (friend.username === friendUsername) {
-        return fail(409, { success: false, error: Errors.AlreadyAddedFriend });
-      }
-    }
+    // for (let friend of friends) {
+    //   if (friend.username === friendUsername) {
+    //     return fail(409, { success: false, error: Errors.AlreadyAddedFriend });
+    //   }
+    // }
 
     const res = await fetch(FRIENDS_API, {
       method: "POST",
