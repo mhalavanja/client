@@ -38,9 +38,32 @@ export const actions: Actions = {
     }
 
     const data = await event.request.formData();
-    const groupId = data.get("groupId");
+    const groupId = event.params.id;
 
     const res = await fetch(GROUPS_API + "/" + groupId, {
+      method: "DELETE",
+      headers: { authorization: "Bearer " + jwt },
+    });
+
+    if (res.status == 401) {
+      return fail(401, { success: false, error: Errors.WrongGroup });
+    } else if (res.status >= 400 && res.status < 600) {
+      return fail(res.status, { success: false, error: Errors.GenericError });
+    }
+
+    throw redirect(307, "/groups");
+  },
+
+  leaveGroup: async (event) => {
+    const jwt = event.cookies.get("jwt") || "";
+    if (jwt === "") {
+      throw redirect(307, "/");
+    }
+
+    const data = await event.request.formData();
+    const groupId = event.params.id;
+
+    const res = await fetch(GROUPS_API + "/leave/" + groupId, {
       method: "DELETE",
       headers: { authorization: "Bearer " + jwt },
     });

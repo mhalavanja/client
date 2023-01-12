@@ -1,4 +1,4 @@
-import { fail, redirect } from "@sveltejs/kit";
+import { redirect } from "@sveltejs/kit";
 import { Errors, GROUPS_API } from "../../../../../consts";
 import type { User } from "src/types";
 import type { RequestHandler } from "./$types";
@@ -17,7 +17,7 @@ export const GET = (async (event) => {
   });
 
   if (res.status >= 400 && res.status < 600) {
-    return fail(res.status, { success: false, error: Errors.GenericError });
+    return new Response(JSON.stringify({ success: false, error: Errors.GenericError }));
   }
 
   const jsonGroupUsers = await res.json();
@@ -44,17 +44,18 @@ export const POST = (async (event) => {
 
   let friendUsername = await event.request.json();
   if (!friendUsername) {
-    return fail(400, { success: false, error: Errors.MissingUsername });
+    return new Response(JSON.stringify({ success: false, error: Errors.MissingUsername }));
   }
 
   friendUsername = String(friendUsername).trim();
   if (0 === friendUsername.length) {
-    return fail(400, { success: false, error: Errors.UsernameEmpty });
+    return new Response(JSON.stringify({ success: false, error: Errors.UsernameEmpty }));
   }
 
   const username = event.cookies.get("username");
+  console.log(username, friendUsername);
   if (username === friendUsername) {
-    return fail(409, { success: false, error: Errors.UniqueUsername });
+    return new Response(JSON.stringify({ success: false, error: Errors.UniqueUsername }));
   }
 
   const res = await fetch(GROUPS_API + "/" + groupId + "/users", {
@@ -64,12 +65,14 @@ export const POST = (async (event) => {
   });
 
   if (res.status == 404) {
-    return fail(404, { success: false, error: Errors.UserNotExisting });
+    return new Response(JSON.stringify({ success: false, error: Errors.UserNotExisting }));
   } else if (res.status == 409) {
-    return fail(409, { success: false, error: Errors.UserInGroup });
+    return new Response(JSON.stringify({ success: false, error: Errors.UserInGroup }));
   } else if (res.status >= 400 && res.status < 600) {
-    return fail(res.status, { success: false, error: Errors.GenericError });
+    return new Response(JSON.stringify({ success: false, error: Errors.GenericError }));
   }
+
+  return new Response(JSON.stringify({ success: true }));
 }) satisfies RequestHandler;
 
 export const DELETE = (async (event) => {
@@ -88,7 +91,7 @@ export const DELETE = (async (event) => {
   });
 
   if (res.status >= 400 && res.status < 600) {
-    return fail(res.status, { success: false, error: Errors.GenericError });
+    return new Response(JSON.stringify({ success: false, error: Errors.GenericError }));
   }
 
   return new Response(JSON.stringify({ success: true }));

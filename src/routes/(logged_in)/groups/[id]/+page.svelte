@@ -2,10 +2,9 @@
   import { enhance } from "$app/forms";
   import { Alert, Button, Modal } from "flowbite-svelte";
   import type { User } from "src/types";
-  import type { ActionData, PageData } from "./$types";
+  import type { PageData } from "./$types";
 
   export let data: PageData;
-  export let form: ActionData;
 
   let showModal = false;
   let addUsername = "";
@@ -13,6 +12,7 @@
   let title = isOwner ? "Manage" : "Members";
   let members: User[] = [];
   const groupId = data.group?.id;
+  let error = "";
 
   async function getMembers() {
     const response = await fetch(groupId + "/members", {
@@ -33,7 +33,7 @@
 
   async function addUser(username: string) {
     if (username.trim() === "") return;
-    fetch(groupId + "/members", {
+    const response: Response = await fetch(groupId + "/members", {
       method: "POST",
       headers: new Headers({
         "content-type": "application/json",
@@ -41,12 +41,19 @@
       body: JSON.stringify(username),
     });
 
-    addUsername = "";
-    members = await getMembers();
+    const data = await response.json();
+
+    if (data.success) {
+      addUsername = "";
+      error = "";
+      members = await getMembers();
+    } else {
+      error = data.error;
+    }
   }
 
   async function removeUser(userId: number) {
-    fetch(groupId + "/members", {
+    const response: Response = await fetch(groupId + "/members", {
       method: "DELETE",
       headers: new Headers({
         "content-type": "application/json",
@@ -54,7 +61,14 @@
       body: JSON.stringify(userId),
     });
 
-    members = await getMembers();
+    const data = await response.json();
+
+    if (data.success) {
+      error = "";
+      members = await getMembers();
+    } else {
+      error = data.error;
+    }
   }
 </script>
 
@@ -62,8 +76,8 @@
   <Button type="submit" on:click={showMembers}>{title}</Button>
 
   <Modal {title} bind:open={showModal}>
-    {#if form && !form.success && form.error}
-      <Alert dismissable={true}>{form.error}</Alert>
+    {#if error}
+      <Alert dismissable={true}>{error}</Alert>
     {/if}
     {#if isOwner}
       <input
@@ -88,9 +102,13 @@
     {/each}
     <svelte:fragment slot="footer">
       {#if isOwner}
-        <Button color="red">Delete</Button>
+        <form use:enhance method="post" action="?/deleteGroup">
+          <Button type="submit" color="red">Delete</Button>
+        </form>
       {:else}
-        <Button color="red">Leave</Button>
+        <form use:enhance method="post" action="?/leaveGroup">
+          <Button type="submit" color="red">Leave</Button>
+        </form>
       {/if}
       <Button on:click={() => (showModal = false)} color="alternative">Close</Button>
     </svelte:fragment>
