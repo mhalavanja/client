@@ -1,8 +1,10 @@
 <script lang="ts">
   import { enhance } from "$app/forms";
-  import { Alert, Button, Modal } from "flowbite-svelte";
+  import { Alert, Button, Input, Modal } from "flowbite-svelte";
   import type { User } from "src/types";
   import type { PageData } from "./$types";
+  import { onMount } from "svelte";
+  import { REST_API_WS } from "../../../../consts";
 
   export let data: PageData;
 
@@ -13,6 +15,36 @@
   let members: User[] = [];
   const groupId = data.group?.id;
   let error = "";
+  let log: HTMLDivElement;
+  let conn: WebSocket;
+  let input: HTMLInputElement;
+  let sendMsgBtn: HTMLButtonElement;
+
+  onMount(async () => {
+    function appendLog(item: HTMLDivElement) {
+      let doScroll = log.scrollTop > log.scrollHeight - log.clientHeight - 1;
+      log.appendChild(item);
+      if (doScroll) {
+        log.scrollTop = log.scrollHeight - log.clientHeight;
+      }
+    }
+
+    conn = new WebSocket(REST_API_WS + "/ws/groups/" + groupId);
+    conn.onclose = function (_) {
+      input.value = "Connection closed";
+      input.disabled = true;
+      sendMsgBtn.disabled = true;
+    };
+    conn.onmessage = function (evt) {
+      const data = evt.data;
+      console.log(data);
+      const usr = data.substring(0, data.indexOf(" "));
+      const msg = data.substring(data.indexOf(" ") + 1);
+      let item = document.createElement("div");
+      item.innerText = usr + ": " + msg;
+      appendLog(item);
+    };
+  });
 
   async function getMembers() {
     const response = await fetch(groupId + "/members", {
@@ -70,6 +102,11 @@
       error = data.error;
     }
   }
+
+  async function sendMessage(message: string) {
+    conn.send(data.username + " " + message);
+    input.value = "";
+  }
 </script>
 
 {#if data.group}
@@ -100,20 +137,31 @@
         {/if}
       </div>
     {/each}
-    <svelte:fragment slot="footer">
-      {#if isOwner}
-        <form use:enhance method="post" action="?/deleteGroup">
-          <Button type="submit" color="red">Delete</Button>
-        </form>
-      {:else}
-        <form use:enhance method="post" action="?/leaveGroup">
-          <Button type="submit" color="red">Leave</Button>
-        </form>
-      {/if}
-      <Button on:click={() => (showModal = false)} color="alternative">Close</Button>
-    </svelte:fragment>
+    {#if isOwner}
+      <form use:enhance method="post" action="?/deleteGroup">
+        <Button type="submit" color="red">Delete</Button>
+      </form>
+    {:else}
+      <form use:enhance method="post" action="?/leaveGroup">
+        <Button type="submit" color="red">Leave</Button>
+      </form>
+    {/if}
+    <Button on:click={() => (showModal = false)} color="alternative">Close</Button>
   </Modal>
 
   <h1>Group: {data.group.name}</h1>
   <h1>Owner: {data.group.owner}</h1>
+
+  <div bind:this={log} id="log" />
+  <Input let:props class="absolute bottom-4 ">
+    <input bind:this={input} type="text" {...props} placeholder="Type a message" />
+  </Input>
+  <Button
+    on:click={() => sendMessage(input.value)}
+    color="alternative"
+    class="absolute bottom-4 right-0"
+  >
+    Send
+    <button bind:this={sendMsgBtn} />
+  </Button>
 {/if}

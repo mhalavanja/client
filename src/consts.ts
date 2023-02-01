@@ -1,6 +1,7 @@
 import { PUBLIC_REST_API_BASE_URI, PUBLIC_REST_API_PORT } from "$env/static/public";
 
 const restApi = "http://" + PUBLIC_REST_API_BASE_URI + ":" + PUBLIC_REST_API_PORT;
+const REST_API_WS = "ws://" + PUBLIC_REST_API_BASE_URI + ":" + PUBLIC_REST_API_PORT;
 const AUTHENTICATE_API = restApi + "/authenticate";
 const GROUPS_API = restApi + "/groups";
 const FRIENDS_API = restApi + "/friends";
@@ -23,4 +24,13 @@ enum Errors {
   GenericError = "Something went wrong on our side, sorry about that",
 }
 
-export { AUTHENTICATE_API, REGISTER_API, GROUPS_API, AUTH_HEADER, FRIENDS_API, USER_API, Errors };
+export {
+  AUTHENTICATE_API,
+  REGISTER_API,
+  GROUPS_API,
+  AUTH_HEADER,
+  FRIENDS_API,
+  USER_API,
+  REST_API_WS,
+  Errors,
+};
