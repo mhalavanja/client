@@ -19,7 +19,8 @@ export const load: PageServerLoad = async (event) => {
   } else if (res.status === 500) {
   }
 
-  return { success: true, groups: res.json() };
+  const username = event.cookies.get("username");
+  return { success: true, groups: res.json(), username };
 };
 
 export const actions: Actions = {

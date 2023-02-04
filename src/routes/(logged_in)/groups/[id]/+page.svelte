@@ -1,6 +1,16 @@
 <script lang="ts">
   import { enhance } from "$app/forms";
-  import { Alert, Button, Input, Modal } from "flowbite-svelte";
+  import {
+    Alert,
+    Button,
+    ButtonGroup,
+    Input,
+    Li,
+    List,
+    Modal,
+    Search,
+    Span,
+  } from "flowbite-svelte";
   import type { User } from "src/types";
   import type { PageData } from "./$types";
   import { onMount } from "svelte";
@@ -110,57 +120,23 @@
 </script>
 
 {#if data.group}
-  <Button type="submit" on:click={showMembers}>{title}</Button>
-
-  <Modal {title} bind:open={showModal}>
-    {#if error}
-      <Alert dismissable={true}>{error}</Alert>
-    {/if}
-    {#if isOwner}
-      <input
-        bind:value={addUsername}
-        id="username"
-        name="username"
-        type="text"
-        required
-        placeholder="Username"
-      />
-      <Button on:click={async () => addUser(addUsername)}>Add</Button>
-    {/if}
-
-    {#each members as member}
-      <div>
-        {member.username},
-        {member.email}
-        {#if data.username !== member.username && isOwner}
-          <Button on:click={() => removeUser(member.id)} color="red">Remove</Button>
-        {/if}
-      </div>
-    {/each}
-    {#if isOwner}
-      <form use:enhance method="post" action="?/deleteGroup">
-        <Button type="submit" color="red">Delete</Button>
-      </form>
-    {:else}
-      <form use:enhance method="post" action="?/leaveGroup">
-        <Button type="submit" color="red">Leave</Button>
-      </form>
-    {/if}
-    <Button on:click={() => (showModal = false)} color="alternative">Close</Button>
-  </Modal>
-
-  <h1>Group: {data.group.name}</h1>
-  <h1>Owner: {data.group.owner}</h1>
+  <div class="flex-1 min-w-0">
+    <div>
+      <Span class="text-sm font-medium text-gray-900 truncate dark:text-white">Group:</Span>
+      <Span class="text-sm text-gray-500 truncate dark:text-gray-400">{data.group.name}</Span>
+    </div>
+    <div>
+      <Span class="text-sm font-medium text-gray-900 truncate dark:text-white">Owner:</Span>
+      <Span class="text-sm text-gray-500 truncate dark:text-gray-400">{data.group.owner}</Span>
+    </div>
+    <!-- <Button type="submit" on:click={showMembers} color="alternative">{title}</Button> -->
+  </div>
 
   <div bind:this={log} id="log" />
   <Input let:props class="absolute bottom-4 ">
     <input bind:this={input} type="text" {...props} placeholder="Type a message" />
   </Input>
-  <Button
-    on:click={() => sendMessage(input.value)}
-    color="alternative"
-    class="absolute bottom-4 right-0"
-  >
+  <Button on:click={() => sendMessage(input.value)} color="blue" class="absolute bottom-4 right-0">
     Send
     <button bind:this={sendMsgBtn} />
   </Button>

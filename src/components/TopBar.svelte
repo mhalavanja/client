@@ -1,11 +1,11 @@
 <div
-  class="relative justify-between object-left rounded bg-indigo-600 z-1 h-10 mx-auto px-5 max-w-7xl flex text-white gap-5"
+  class="relative justify-between object-left rounded bg-blue-600 z-1 h-10 mx-auto px-5 max-w-12xl flex text-white gap-5"
 >
   <ul class="flex gap-5">
     <li>
       <a
         href="/friends"
-        class="flex p-2 text-base font-normal text-gray-50 rounded-lg hover:bg-indigo-500"
+        class="flex p-2 text-base font-normal text-gray-50 rounded-lg hover:bg-blue-500"
       >
         <svg
           class="w-6 h-6 text-gray-50 transition duration-75"
@@ -20,7 +20,7 @@
       </a>
     </li>
     <li>
-      <a href="/groups" class="flex p-2 text-base font-normal rounded-lg hover:bg-indigo-500">
+      <a href="/groups" class="flex p-2 text-base font-normal rounded-lg hover:bg-blue-500">
         <svg
           class="flex-shrink-0 w-6 h-6 transition duration-75"
           fill="currentColor"
@@ -34,7 +34,7 @@
       </a>
     </li>
     <li>
-      <a href="/account" class="flex p-2 text-base font-normal rounded-lg hover:bg-indigo-500">
+      <a href="/account" class="flex p-2 text-base font-normal rounded-lg hover:bg-blue-500">
         <svg
           class="flex-shrink-0 w-6 h-6 transition duration-75"
           fill="currentColor"
@@ -60,10 +60,7 @@
     </li>
   </ul>
 
-  <a
-    href="/logout"
-    class="float-right flex p-2 text-base font-normal rounded-lg hover:bg-indigo-500"
-  >
+  <a href="/logout" class="float-right flex p-2 text-base font-normal rounded-lg hover:bg-blue-500">
     <svg
       class="flex-shrink-0 w-6 h-6 transition duration-75"
       fill="currentColor"
