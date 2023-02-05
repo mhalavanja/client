@@ -1,7 +1,6 @@
-import { redirect } from "@sveltejs/kit";
-import { Errors, GROUPS_API } from "../../../../../consts";
-import type { User } from "src/types";
-import type { RequestHandler } from "./$types";
+import { redirect, type RequestHandler } from "@sveltejs/kit";
+import { Errors, GROUPS_API } from "@consts";
+import type { User } from "@types";
 
 export const GET = (async (event) => {
   const jwt = event.cookies.get("jwt") || "";
@@ -53,7 +52,6 @@ export const POST = (async (event) => {
   }
 
   const username = event.cookies.get("username");
-  console.log(username, friendUsername);
   if (username === friendUsername) {
     return new Response(JSON.stringify({ success: false, error: Errors.UniqueUsername }));
   }

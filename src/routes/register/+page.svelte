@@ -1,7 +1,7 @@
 <script lang="ts">
-  import LandingForm from "../../components/LandingForm.svelte";
+  import LandingForm from "@components/LandingForm.svelte";
   import type { ActionData } from "./$types";
-  import Alert from "../../components/Alert.svelte";
+  import Alert from "@components/Alert.svelte";
 
   export const prerender = true;
   export let form: ActionData;

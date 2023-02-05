@@ -1,7 +1,6 @@
 import type { PageServerLoad } from ".svelte-kit/types/src/routes/$types";
-import { redirect, type Actions } from "@sveltejs/kit";
-import { fail } from "@sveltejs/kit";
-import { GROUPS_API, Errors } from "../../../consts";
+import { redirect, type Actions, fail } from "@sveltejs/kit";
+import { GROUPS_API, Errors } from "@consts";
 
 export const load: PageServerLoad = async (event) => {
   const jwt = event.cookies.get("jwt") || "";

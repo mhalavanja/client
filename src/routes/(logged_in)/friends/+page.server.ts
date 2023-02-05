@@ -1,7 +1,7 @@
 import type { PageServerLoad } from ".svelte-kit/types/src/routes/$types";
 import { fail, redirect, type Actions } from "@sveltejs/kit";
 import type { User } from "src/types";
-import { Errors, FRIENDS_API } from "../../../consts";
+import { Errors, FRIENDS_API } from "@consts";
 
 let friends: Array<User> = [];
 

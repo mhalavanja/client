@@ -14,7 +14,7 @@
   import type { User } from "src/types";
   import type { PageData } from "./$types";
   import { onMount } from "svelte";
-  import { REST_API_WS } from "../../../../consts";
+  import { REST_API_WS } from "@consts";
 
   export let data: PageData;
 

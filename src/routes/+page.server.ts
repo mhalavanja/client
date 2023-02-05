@@ -1,7 +1,7 @@
 import type { Actions } from "./$types";
-import { Errors, AUTHENTICATE_API } from "../consts";
+import { Errors, AUTHENTICATE_API } from "@consts";
 import { fail, redirect, type ServerLoad } from "@sveltejs/kit";
-import type { AuthToken } from "../types";
+import type { AuthToken } from "@types";
 
 export const load: ServerLoad = async (event) => {
   if (event.cookies.get("jwt")) {

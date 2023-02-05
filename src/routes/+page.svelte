@@ -1,6 +1,6 @@
 <script lang="ts">
-  import LandingForm from "../components/LandingForm.svelte";
-  import Alert from "../components/Alert.svelte";
+  import LandingForm from "@components/LandingForm.svelte";
+  import Alert from "@components/Alert.svelte";
 
   import type { ActionData } from "./$types";
 

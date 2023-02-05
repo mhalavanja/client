@@ -1,7 +1,7 @@
 <script lang="ts">
   import { Button, Input, Label } from "flowbite-svelte";
 
-  import type { User } from "../types";
+  import type { User } from "@types";
 
   export let user: User | undefined = undefined;
   export let title: string | undefined = undefined;

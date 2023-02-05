@@ -1,6 +1,6 @@
 import { fail, redirect } from "@sveltejs/kit";
 import type { Actions } from "./$types";
-import { AUTHENTICATE_API, Errors, REGISTER_API } from "../../consts";
+import { AUTHENTICATE_API, Errors, REGISTER_API } from "@consts";
 import type { AuthToken } from "src/types";
 
 export const actions: Actions = {

@@ -1,9 +1,9 @@
 <script lang="ts">
-  import Alert from "../../../components/Alert.svelte";
-  import AddForm, { AddFormType } from "../../../components/AddForm.svelte";
-  import FriendCard from "../../../components/FriendCard.svelte";
+  import Alert from "@components/Alert.svelte";
+  import AddForm, { AddFormType } from "@components/AddForm.svelte";
+  import FriendCard from "@components/FriendCard.svelte";
   import type { ActionData, PageData } from "./$types";
-  import PlusCard from "../../../components/PlusCard.svelte";
+  import PlusCard from "@components/PlusCard.svelte";
   import { Modal } from "flowbite-svelte";
 
   export let data: PageData;

@@ -1,5 +1,5 @@
 <script lang="ts">
-  import GenericForm from "../../../components/GenericForm.svelte";
+  import GenericForm from "@components/GenericForm.svelte";
   import type { PageData, ActionData } from "./$types";
 
   export let data: PageData;
