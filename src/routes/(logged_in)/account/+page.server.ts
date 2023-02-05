@@ -1,6 +1,6 @@
 import type { Actions, PageServerLoad } from "./$types";
 import { redirect } from "@sveltejs/kit";
-import { USER_API } from "../../../consts";
+import { USER_API } from "@consts";
 
 export const load: PageServerLoad = async (event) => {
   const jwt = event.cookies.get("jwt") || "";
@@ -26,7 +26,8 @@ export const actions: Actions = {
     const data = await event.request.formData();
     const username = data.get("username");
     const email = data.get("email");
-    const password = data.get("password");
+    const oldPassword = data.get("oldPassword");
+    const newPassword = data.get("newPassword");
     const jwt = event.cookies.get("jwt") || "";
     if (jwt === "") {
       throw redirect(307, "/");
@@ -38,7 +39,8 @@ export const actions: Actions = {
       body: JSON.stringify({
         username,
         email,
-        password,
+        oldPassword,
+        newPassword,
       }),
     });
 
@@ -53,7 +55,6 @@ export const actions: Actions = {
       user: {
         username,
         email,
-        password,
       },
     };
   },
