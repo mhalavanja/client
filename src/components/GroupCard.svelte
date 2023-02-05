@@ -13,26 +13,20 @@
     Modal,
     ToolbarButton,
   } from "flowbite-svelte";
-  import type { Group } from "../types";
-  import type { User } from "src/types";
-  import { enhance } from "$app/forms";
+  import type { Group, User } from "@types";
 
   export let group: Group;
-  export const username: string | undefined = undefined;
-
-  function onClick() {
-    goto("/groups/" + group.id);
-  }
+  export let username: string;
 
   let showModal = false;
-  const isOwner = username == group.owner;
+  const isOwner = username === group.owner;
   let title = isOwner ? "Manage" : "Members";
   let members: User[] = [];
   let addUsername = "";
   let error = "";
 
-  async function getMembers() {
-    const response = await fetch(group.id + "/members", {
+  async function showMembers() {
+    const response = await fetch("/groups/" + group.id + "/members", {
       method: "GET",
       headers: {
         "content-type": "application/json",
@@ -40,17 +34,14 @@
     });
 
     const data = await response.json();
-    return data.members;
-  }
 
-  async function showMembers() {
-    members = await getMembers();
+    members = data.members;
     showModal = true;
   }
 
   async function addUser(username: string) {
     if (username.trim() === "") return;
-    const response: Response = await fetch(group.id + "/members", {
+    const response: Response = await fetch("/groups/" + group.id + "/members", {
       method: "POST",
       headers: new Headers({
         "content-type": "application/json",
@@ -63,14 +54,14 @@
     if (data.success) {
       addUsername = "";
       error = "";
-      members = await getMembers();
+      showMembers();
     } else {
       error = data.error;
     }
   }
 
   async function removeUser(userId: number) {
-    const response: Response = await fetch(group.id + "/members", {
+    const response: Response = await fetch("/groups/" + group.id + "/members", {
       method: "DELETE",
       headers: new Headers({
         "content-type": "application/json",
@@ -82,10 +73,34 @@
 
     if (data.success) {
       error = "";
-      members = await getMembers();
+      showMembers();
     } else {
       error = data.error;
     }
+  }
+
+  async function deleteGroup() {
+    const res: Response = await fetch("/groups/" + group.id + "/delete", {
+      method: "DELETE",
+      headers: new Headers({
+        "content-type": "application/json",
+      }),
+      body: JSON.stringify(group.id),
+    });
+
+    console.log(res);
+  }
+
+  async function leaveGroup() {
+    const res: Response = await fetch("/groups/" + group.id + "/leave", {
+      method: "DELETE",
+      headers: new Headers({
+        "content-type": "application/json",
+      }),
+      body: JSON.stringify(group.id),
+    });
+
+    console.log(res);
   }
 </script>
 
@@ -101,14 +116,28 @@
       /></svg
     >
   </ToolbarButton>
+
   <Dropdown triggeredBy=".dots-menu">
-    <DropdownItem>
-      <!-- svelte-ignore a11y-click-events-have-key-events -->
-      <p class="text-lg text-red-600">Remove</p>
+    <DropdownItem on:click={showMembers}>
+      <p class="text-lg">{title}</p>
     </DropdownItem>
+    {#if isOwner}
+      <DropdownItem on:click={deleteGroup}>
+        <p class="text-lg text-red-600">Delete</p>
+      </DropdownItem>
+    {:else}
+      <DropdownItem on:click={leaveGroup}>
+        <p class="text-lg text-red-600">Leave</p>
+      </DropdownItem>
+    {/if}
   </Dropdown>
   <!-- svelte-ignore a11y-click-events-have-key-events -->
-  <div class="absolute inset-0" on:click={onClick} />
+  <div
+    class="absolute inset-0"
+    on:click={() => {
+      goto("/groups/" + group.id);
+    }}
+  />
   <p class="mb-2 text-3xl font-bold tracking-tight text-gray-900 dark:text-white">
     {group.name}
   </p>
@@ -140,21 +169,14 @@
             <p class="text-sm text-gray-500 truncate dark:text-gray-400">{member.email}</p>
           </div>
           {#if username !== member.username && isOwner}
-            <Button on:click={() => removeUser(member.id)} class="absolute right-6" color="red"
-              >Remove</Button
+            <Button
+              on:click={() => removeUser(member.id)}
+              class="relative bottom-0 left-96"
+              color="red">Remove</Button
             >
           {/if}
         </div>
       </Li>
     {/each}
   </List>
-  {#if isOwner}
-    <form use:enhance method="post" action="?/deleteGroup">
-      <Button type="submit" class="absolute right-6 bottom-6" color="red">Delete</Button>
-    </form>
-  {:else}
-    <form use:enhance method="post" action="?/leaveGroup">
-      <Button type="submit" class="absolute right-6 bottom-6" color="red">Leave</Button>
-    </form>
-  {/if}
 </Modal>
