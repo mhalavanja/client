@@ -1,7 +1,7 @@
 <script lang="ts">
   import { goto } from "$app/navigation";
   import { Button, Card, Dropdown, DropdownItem, Modal, ToolbarButton } from "flowbite-svelte";
-  import type { User } from "../types";
+  import type { User } from "@types";
   export let friend: User;
   let showModal = false;
 
@@ -31,7 +31,12 @@
   <Dropdown triggeredBy=".dots-menu">
     <DropdownItem>
       <!-- svelte-ignore a11y-click-events-have-key-events -->
-      <p on:click={removeFriend} class="text-lg text-red-600">Remove</p>
+      <button
+        on:click={removeFriend}
+        class="p-0 border-spacing-0 bg-none absolute inset-0"
+        type="submit"
+      />
+      <p class="text-lg text-red-600">Remove</p>
     </DropdownItem>
   </Dropdown>
 
