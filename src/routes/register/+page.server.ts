@@ -1,14 +1,14 @@
 import { fail, redirect } from "@sveltejs/kit";
 import type { Actions } from "./$types";
-import { AUTHENTICATE_API, Errors, REGISTER_API } from "@consts";
-import type { AuthToken } from "src/types";
+import { TOKENS_API, Errors, REGISTER_API } from "@consts";
+import { setCookiesOnLogin } from "@/util/setCookiesOnLogin";
 
 export const actions: Actions = {
   default: async (event) => {
     const data = await event.request.formData();
-    const email = data.get("email");
-    const username = data.get("username");
-    const password = data.get("password");
+    const email = String(data.get("email"));
+    const username = String(data.get("username"));
+    const password = String(data.get("password"));
 
     let res = await fetch(REGISTER_API, {
       method: "POST",
@@ -25,7 +25,7 @@ export const actions: Actions = {
       return fail(res.status, { success: false, error: Errors.GenericError });
     }
 
-    res = await fetch(AUTHENTICATE_API, {
+    res = await fetch(TOKENS_API + "/authenticate", {
       method: "POST",
       body: JSON.stringify({
         username,
@@ -37,17 +37,7 @@ export const actions: Actions = {
       return fail(res.status, { success: false, error: Errors.GenericError });
     }
 
-    const authToken: AuthToken = await res.json();
-    event.cookies.set("jwt", authToken.access_token, {
-      path: "/",
-      expires: new Date(authToken.access_token_expires_at),
-    });
-
-    event.cookies.set("username", String(username), {
-      path: "/",
-      expires: new Date(authToken.access_token_expires_at),
-    });
-
-    throw redirect(307, "/friends");
+    await setCookiesOnLogin(event.cookies, res, username);
+    throw redirect(307, "/groups");
   },
 };

@@ -2,14 +2,12 @@ import type { PageServerLoad } from ".svelte-kit/types/src/routes/$types";
 import { fail, redirect, type Actions } from "@sveltejs/kit";
 import type { User } from "src/types";
 import { Errors, FRIENDS_API } from "@consts";
+import { getJwt } from "@/util/getJWT";
 
 let friends: Array<User> = [];
 
 export const load: PageServerLoad = async (event) => {
-  const jwt = event.cookies.get("jwt") || "";
-  if (jwt === "") {
-    throw redirect(307, "/");
-  }
+  const jwt = await getJwt(event.cookies);
 
   const res = await fetch(FRIENDS_API, {
     method: "GET",
@@ -26,12 +24,8 @@ export const load: PageServerLoad = async (event) => {
 
 export const actions: Actions = {
   default: async (event) => {
+    const jwt = await getJwt(event.cookies);
     const data = await event.request.formData();
-
-    const jwt = event.cookies.get("jwt") || "";
-    if (jwt === "") {
-      throw redirect(307, "/");
-    }
 
     let friendUsername = data.get("username");
     if (!friendUsername) {

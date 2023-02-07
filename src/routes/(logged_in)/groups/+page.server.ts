@@ -1,12 +1,10 @@
 import type { PageServerLoad } from ".svelte-kit/types/src/routes/$types";
 import { redirect, type Actions, fail } from "@sveltejs/kit";
 import { GROUPS_API, Errors } from "@consts";
+import { getJwt } from "@/util/getJWT";
 
 export const load: PageServerLoad = async (event) => {
-  const jwt = event.cookies.get("jwt") || "";
-  if (jwt === "") {
-    throw redirect(307, "/");
-  }
+  const jwt = await getJwt(event.cookies);
 
   const res = await fetch(GROUPS_API, {
     method: "GET",
@@ -24,12 +22,8 @@ export const load: PageServerLoad = async (event) => {
 
 export const actions: Actions = {
   default: async (event) => {
+    const jwt = await getJwt(event.cookies);
     const data = await event.request.formData();
-
-    const jwt = event.cookies.get("jwt") || "";
-    if (jwt === "") {
-      throw redirect(307, "/");
-    }
 
     let groupName = data.get("groupName");
     if (!groupName) {

@@ -2,7 +2,7 @@ import { PUBLIC_REST_API_BASE_URI, PUBLIC_REST_API_PORT } from "$env/static/publ
 
 const restApi = "http://" + PUBLIC_REST_API_BASE_URI + ":" + PUBLIC_REST_API_PORT;
 const REST_API_WS = "ws://" + PUBLIC_REST_API_BASE_URI + ":" + PUBLIC_REST_API_PORT;
-const AUTHENTICATE_API = restApi + "/authenticate";
+const TOKENS_API = restApi + "/tokens";
 const GROUPS_API = restApi + "/groups";
 const FRIENDS_API = restApi + "/friends";
 const USER_API = restApi + "/user";
@@ -25,7 +25,7 @@ enum Errors {
 }
 
 export {
-  AUTHENTICATE_API,
+  TOKENS_API,
   REGISTER_API,
   GROUPS_API,
   AUTH_HEADER,

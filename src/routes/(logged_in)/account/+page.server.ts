@@ -1,21 +1,20 @@
 import type { Actions, PageServerLoad } from "./$types";
-import { redirect } from "@sveltejs/kit";
-import { USER_API } from "@consts";
+import { fail, redirect } from "@sveltejs/kit";
+import { Errors, USER_API } from "@consts";
+import { getJwt } from "@/util/getJWT";
 
 export const load: PageServerLoad = async (event) => {
-  const jwt = event.cookies.get("jwt") || "";
-  if (jwt === "") {
-    throw redirect(307, "/");
-  }
+  const jwt = await getJwt(event.cookies);
 
   const res = await fetch(USER_API, {
     method: "GET",
     headers: { authorization: "Bearer " + jwt },
   });
 
-  if (res.status === 401) {
-    return { success: false };
-  } else if (res.status === 500) {
+  if (res.status == 401) {
+    return fail(404, { success: false, error: Errors.UserNotExisting });
+  } else if (res.status >= 400 && res.status < 600) {
+    return fail(res.status, { success: false, error: Errors.GenericError });
   }
 
   return { success: true, user: res.json() };
@@ -23,15 +22,13 @@ export const load: PageServerLoad = async (event) => {
 
 export const actions: Actions = {
   default: async (event) => {
+    const jwt = await getJwt(event.cookies);
+
     const data = await event.request.formData();
     const username = data.get("username");
     const email = data.get("email");
     const oldPassword = data.get("oldPassword");
     const newPassword = data.get("newPassword");
-    const jwt = event.cookies.get("jwt") || "";
-    if (jwt === "") {
-      throw redirect(307, "/");
-    }
 
     const res = await fetch(USER_API, {
       method: "PUT",
@@ -44,10 +41,10 @@ export const actions: Actions = {
       }),
     });
 
-    if (res.status === 401 || res.status === 500) {
-      return {
-        success: false,
-      };
+    if (res.status == 401) {
+      return fail(404, { success: false, error: Errors.UserNotExisting });
+    } else if (res.status >= 400 && res.status < 600) {
+      return fail(res.status, { success: false, error: Errors.GenericError });
     }
 
     return {

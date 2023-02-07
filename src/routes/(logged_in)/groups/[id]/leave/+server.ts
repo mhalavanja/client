@@ -1,11 +1,9 @@
 import { error, redirect, type RequestHandler } from "@sveltejs/kit";
 import { Errors, GROUPS_API } from "@consts";
+import { getJwt } from "@/util/getJWT";
 
 export const DELETE = (async (event) => {
-  const jwt = event.cookies.get("jwt") || "";
-  if (jwt === "") {
-    throw redirect(307, "/");
-  }
+  const jwt = await getJwt(event.cookies);
   const groupId = event.params.id;
 
   const res = await fetch(GROUPS_API + "/" + groupId + "/leave", {

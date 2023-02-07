@@ -1,14 +1,11 @@
-import { redirect, type RequestHandler } from "@sveltejs/kit";
+import type { RequestHandler } from "@sveltejs/kit";
 import { Errors, GROUPS_API } from "@consts";
 import type { User } from "@types";
+import { getJwt } from "@/util/getJWT";
 
 export const GET = (async (event) => {
-  const jwt = event.cookies.get("jwt") || "";
+  const jwt = await getJwt(event.cookies);
   const id: number = Number(event.params.id);
-
-  if (jwt === "") {
-    throw redirect(307, "/");
-  }
 
   const res = await fetch(GROUPS_API + "/" + id + "/users", {
     method: "GET",
@@ -34,12 +31,8 @@ export const GET = (async (event) => {
 }) satisfies RequestHandler;
 
 export const POST = (async (event) => {
+  const jwt = await getJwt(event.cookies);
   const groupId: number = Number(event.params.id);
-
-  const jwt = event.cookies.get("jwt") || "";
-  if (jwt === "") {
-    throw redirect(307, "/");
-  }
 
   let friendUsername = await event.request.json();
   if (!friendUsername) {
@@ -74,13 +67,9 @@ export const POST = (async (event) => {
 }) satisfies RequestHandler;
 
 export const DELETE = (async (event) => {
-  const jwt = event.cookies.get("jwt") || "";
+  const jwt = await getJwt(event.cookies);
   const id: number = Number(event.params.id);
   const userId: string = await event.request.json();
-
-  if (jwt === "") {
-    throw redirect(307, "/");
-  }
 
   const res = await fetch(GROUPS_API + "/" + id + "/users", {
     method: "DELETE",

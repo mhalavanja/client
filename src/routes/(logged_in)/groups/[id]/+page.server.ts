@@ -1,15 +1,12 @@
 import type { PageServerLoad } from ".svelte-kit/types/src/routes/$types";
-import { fail, redirect, type Actions } from "@sveltejs/kit";
+import { fail } from "@sveltejs/kit";
 import type { Group } from "@types";
 import { Errors, GROUPS_API } from "@consts";
+import { getJwt } from "@/util/getJWT";
 
 export const load: PageServerLoad = async (event) => {
-  const jwt = event.cookies.get("jwt") || "";
+  const jwt = await getJwt(event.cookies);
   const id: number = Number(event.params.id);
-
-  if (jwt === "") {
-    throw redirect(307, "/");
-  }
 
   const res = await fetch(GROUPS_API + "/" + id, {
     method: "GET",

@@ -1,20 +1,26 @@
-interface User {
+export interface User {
   id: number;
   username: string;
   email: string;
   password?: string;
 }
 
-interface Group {
+export interface Group {
   id: number;
   name: string;
   owner: string;
 }
 
-interface AuthToken {
+export interface TokensData {
+  readonly session_id: string;
   readonly access_token: string;
   readonly access_token_expires_at: string;
+  readonly refresh_token: string;
+  readonly refresh_token_expires_at: string;
   readonly user_id: number;
 }
 
-export { type User, type Group, type AuthToken };
+export interface JWTData {
+  readonly access_token: string;
+  readonly access_token_expires_at: string;
+}
