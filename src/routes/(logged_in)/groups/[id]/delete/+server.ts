@@ -5,7 +5,7 @@ import { getJwt } from "@/util/getJWT";
 export const DELETE = (async (event) => {
   const jwt = await getJwt(event.cookies);
   const groupId = event.params.id;
-
+  console.log(groupId);
   const res = await fetch(GROUPS_API + "/" + groupId, {
     method: "DELETE",
     headers: { authorization: "Bearer " + jwt },
@@ -17,5 +17,6 @@ export const DELETE = (async (event) => {
     throw error(res.status, Errors.GenericError);
   }
 
-  throw redirect(307, "/groups");
+  // return new Response(JSON.stringify({ success: true }));
+  return new Response();
 }) satisfies RequestHandler;

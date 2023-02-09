@@ -14,10 +14,13 @@
     ToolbarButton,
   } from "flowbite-svelte";
   import type { Group, User } from "@types";
+  import { createEventDispatcher } from "svelte";
 
   export let group: Group;
   export let username: string;
+  const dispatch = createEventDispatcher();
 
+  $: groupId = group.id;
   let showModal = false;
   const isOwner = username === group.owner;
   let title = isOwner ? "Manage" : "Members";
@@ -79,29 +82,19 @@
     }
   }
 
-  async function deleteGroup() {
-    const res: Response = await fetch("/groups/" + group.id + "/delete", {
-      method: "DELETE",
-      headers: new Headers({
-        "content-type": "application/json",
-      }),
-      body: JSON.stringify(group.id),
-    });
-
-    console.log(res);
-  }
-
   async function leaveGroup() {
     const res: Response = await fetch("/groups/" + group.id + "/leave", {
       method: "DELETE",
       headers: new Headers({
         "content-type": "application/json",
       }),
-      body: JSON.stringify(group.id),
+      // body: JSON.stringify(group.id),
     });
 
     console.log(res);
   }
+
+  console.log(group);
 </script>
 
 <Card size="sm" class="relative basis-1/6">
@@ -122,7 +115,11 @@
       <p class="text-lg">{title}</p>
     </DropdownItem>
     {#if isOwner}
-      <DropdownItem on:click={deleteGroup}>
+      <DropdownItem
+        on:click={() => {
+          dispatch("click", { groupId });
+        }}
+      >
         <p class="text-lg text-red-600">Delete</p>
       </DropdownItem>
     {:else}

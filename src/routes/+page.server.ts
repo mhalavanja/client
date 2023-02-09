@@ -4,9 +4,14 @@ import { fail, redirect, type ServerLoad } from "@sveltejs/kit";
 import { setCookiesOnLogin } from "@/util/setCookiesOnLogin";
 
 export const load: ServerLoad = async (event) => {
-  if (event.cookies.get("jwt")) {
+  if (
+    event.cookies.get("jwt") &&
+    event.cookies.get("username") &&
+    event.cookies.get("refresh_token")
+  ) {
     throw redirect(307, "/groups");
   }
+  event.cookies.delete("jwt");
   event.cookies.delete("refresh_token");
   event.cookies.delete("username");
 };

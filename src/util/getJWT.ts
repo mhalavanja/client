@@ -25,10 +25,5 @@ export async function getJwt(cookies: Cookies) {
     expires: new Date(jwtData.access_token_expires_at),
   });
 
-  // cookies.set("jwt_expires_at", jwtData.access_token_expires_at, {
-  //   path: "/",
-  //   expires: new Date(refreshTokenExpiresAt),
-  // });
-
   return jwtData.access_token;
 }

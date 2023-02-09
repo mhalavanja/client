@@ -1,30 +1,12 @@
 <script lang="ts">
-  import { enhance } from "$app/forms";
-  import {
-    Alert,
-    Button,
-    ButtonGroup,
-    Input,
-    Li,
-    List,
-    Modal,
-    Search,
-    Span,
-  } from "flowbite-svelte";
-  import type { User } from "src/types";
+  import { Button, Input, Span } from "flowbite-svelte";
   import type { PageData } from "./$types";
   import { onMount } from "svelte";
   import { REST_API_WS } from "@consts";
 
   export let data: PageData;
 
-  let showModal = false;
-  let addUsername = "";
-  const isOwner = data.username == data.group?.owner;
-  let title = isOwner ? "Manage" : "Members";
-  let members: User[] = [];
   const groupId = data.group?.id;
-  let error = "";
   let log: HTMLDivElement;
   let conn: WebSocket;
   let input: HTMLInputElement;
@@ -47,7 +29,6 @@
     };
     conn.onmessage = function (evt) {
       const data = evt.data;
-      console.log(data);
       const usr = data.substring(0, data.indexOf(" "));
       const msg = data.substring(data.indexOf(" ") + 1);
       let item = document.createElement("div");
@@ -55,63 +36,6 @@
       appendLog(item);
     };
   });
-
-  async function getMembers() {
-    const response = await fetch(groupId + "/members", {
-      method: "GET",
-      headers: {
-        "content-type": "application/json",
-      },
-    });
-
-    const data = await response.json();
-    return data.members;
-  }
-
-  async function showMembers() {
-    members = await getMembers();
-    showModal = true;
-  }
-
-  async function addUser(username: string) {
-    if (username.trim() === "") return;
-    const response: Response = await fetch(groupId + "/members", {
-      method: "POST",
-      headers: new Headers({
-        "content-type": "application/json",
-      }),
-      body: JSON.stringify(username),
-    });
-
-    const data = await response.json();
-
-    if (data.success) {
-      addUsername = "";
-      error = "";
-      members = await getMembers();
-    } else {
-      error = data.error;
-    }
-  }
-
-  async function removeUser(userId: number) {
-    const response: Response = await fetch(groupId + "/members", {
-      method: "DELETE",
-      headers: new Headers({
-        "content-type": "application/json",
-      }),
-      body: JSON.stringify(userId),
-    });
-
-    const data = await response.json();
-
-    if (data.success) {
-      error = "";
-      members = await getMembers();
-    } else {
-      error = data.error;
-    }
-  }
 
   async function sendMessage(message: string) {
     conn.send(data.username + " " + message);
