@@ -3,12 +3,12 @@ import type { JWTData } from "@/types";
 import { redirect, type Cookies } from "@sveltejs/kit";
 
 export async function getJwt(cookies: Cookies) {
-  const refreshToken = cookies.get("refresh_token");
   let jwt = cookies.get("jwt");
-
   if (jwt) {
     return jwt;
   }
+
+  const refreshToken = cookies.get("refresh_token");
   if (!refreshToken) {
     return redirect(307, "/");
   }

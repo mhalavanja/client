@@ -16,7 +16,7 @@ export async function setCookiesOnLogin(cookies: Cookies, res: Response, usernam
     expires: refreshTokenExpiresAt,
   });
 
-  cookies.set("username", String(username), {
+  cookies.set("username", username, {
     path: "/",
     expires: refreshTokenExpiresAt,
   });
