@@ -24,3 +24,12 @@ export interface JWTData {
   readonly access_token: string;
   readonly access_token_expires_at: string;
 }
+
+export class Message {
+  public username: string = ""
+  public text: string = ""
+
+    public constructor(init?:Partial<Message>) {
+        Object.assign(this, init);
+    }
+}

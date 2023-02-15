@@ -3,4 +3,4 @@
 </script>
 
 <TopBar />
-<slot />
+<slot/>

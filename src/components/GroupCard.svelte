@@ -168,7 +168,7 @@
           {#if username !== member.username && isOwner}
             <Button
               on:click={() => removeUser(member.id)}
-              class="relative bottom-0 left-96"
+              class="relative bottom-0 left-16 top-1"
               color="red">Remove</Button
             >
           {/if}
